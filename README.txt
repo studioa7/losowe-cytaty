@@ -1,6 +1,6 @@
 === Losowe Cytaty ===
 Contributors: dawidziolkowski, studioa7
-Tags: cytaty, elementor, widget, losowanie, quotes, hello, dolly
+Tags: cytaty, elementor, widget, losowanie, quotes
 Requires at least: 5.0
 Tested up to: 6.5
 Requires PHP: 7.0
@@ -107,7 +107,7 @@ Jeśli po instalacji wtyczka nie działa poprawnie:
 * Poprawiono mechanizm losowania cytatu raz dziennie.
 * Dodano minifikowane wersje plików CSS i JS.
 * Dodano atrybuty ARIA dla lepszej dostępności.
-* Dodano Studio A&7 jako współautora.
+* Dodano Studio A7 jako współautora.
 
 = 1.0.0 =
 * Pierwsza wersja wtyczki.

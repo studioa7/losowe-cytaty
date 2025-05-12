@@ -102,7 +102,7 @@ add_action('admin_enqueue_scripts', 'losowe_cytaty_admin_enqueue_scripts');
  */
 function losowe_cytaty_admin_page() {
     // Obsługa akcji
-    if (isset($_POST['action']) && $_POST['action'] == 'add_quote' && check_admin_referer('losowe_cytaty_add_quote')) {
+    if (isset($_POST['action']) && sanitize_text_field($_POST['action']) == 'add_quote' && check_admin_referer('losowe_cytaty_add_quote')) {
         $quote = isset($_POST['quote']) ? sanitize_textarea_field(wp_unslash($_POST['quote'])) : '';
         $author = isset($_POST['author']) ? sanitize_text_field(wp_unslash($_POST['author'])) : '';
         
@@ -135,7 +135,7 @@ function losowe_cytaty_admin_page() {
     }
     
     // Obsługa usuwania cytatu
-    if (isset($_GET['action']) && $_GET['action'] == 'delete' && isset($_GET['quote_id']) && check_admin_referer('delete_quote_' . wp_unslash($_GET['quote_id']))) {
+    if (isset($_GET['action']) && sanitize_text_field($_GET['action']) == 'delete' && isset($_GET['quote_id']) && check_admin_referer('delete_quote_' . wp_unslash($_GET['quote_id']))) {
         $quote_id = intval(wp_unslash($_GET['quote_id']));
         $result = losowe_cytaty_delete_quote($quote_id);
         
@@ -163,8 +163,8 @@ function losowe_cytaty_admin_page() {
     }
     
     // Obsługa edycji cytatu
-    if (isset($_POST['action']) && $_POST['action'] == 'edit_quote' && check_admin_referer('losowe_cytaty_edit_quote')) {
-        $quote_id = isset($_POST['quote_id']) ? intval($_POST['quote_id']) : 0;
+    if (isset($_POST['action']) && sanitize_text_field($_POST['action']) == 'edit_quote' && check_admin_referer('losowe_cytaty_edit_quote')) {
+        $quote_id = isset($_POST['quote_id']) ? intval(wp_unslash($_POST['quote_id'])) : 0;
         $quote = isset($_POST['quote']) ? sanitize_textarea_field(wp_unslash($_POST['quote'])) : '';
         $author = isset($_POST['author']) ? sanitize_text_field(wp_unslash($_POST['author'])) : '';
         
@@ -207,8 +207,8 @@ function losowe_cytaty_admin_page() {
     $edit_mode = false;
     $edit_quote = null;
     
-    if (isset($_GET['action']) && $_GET['action'] == 'edit' && isset($_GET['quote_id'])) {
-        $quote_id = intval($_GET['quote_id']);
+    if (isset($_GET['action']) && sanitize_text_field($_GET['action']) == 'edit' && isset($_GET['quote_id'])) {
+        $quote_id = intval(wp_unslash($_GET['quote_id']));
         $edit_quote = losowe_cytaty_get_quote_by_id($quote_id);
         
         if ($edit_quote) {
@@ -315,7 +315,7 @@ function losowe_cytaty_admin_page() {
  */
 function losowe_cytaty_import_page() {
     // Obsługa importu
-    if (isset($_POST['action']) && $_POST['action'] == 'import_quotes' && check_admin_referer('losowe_cytaty_import')) {
+    if (isset($_POST['action']) && sanitize_text_field($_POST['action']) == 'import_quotes' && check_admin_referer('losowe_cytaty_import')) {
         if (!empty($_FILES['import_file']['tmp_name'])) {
             $file_path = sanitize_text_field($_FILES['import_file']['tmp_name']);
             $result = losowe_cytaty_import_from_file($file_path);
@@ -384,7 +384,7 @@ function losowe_cytaty_import_page() {
  */
 function losowe_cytaty_settings_page() {
     // Obsługa ręcznego losowania cytatu
-    if (isset($_POST['action']) && $_POST['action'] == 'randomize_quote' && check_admin_referer('losowe_cytaty_randomize')) {
+    if (isset($_POST['action']) && sanitize_text_field($_POST['action']) == 'randomize_quote' && check_admin_referer('losowe_cytaty_randomize')) {
         $quote = losowe_cytaty_select_random_quote();
         
         if ($quote) {

@@ -82,8 +82,9 @@ function losowe_cytaty_add_default_quotes() {
     $table_name_esc = esc_sql($table_name);
     
     // Sprawdzenie czy tabela jest pusta
-    $table_name_esc = esc_sql($table_name);
-    $count = $wpdb->get_var("SELECT COUNT(*) FROM `{$table_name_esc}`");
+    $count = $wpdb->get_var(
+        $wpdb->prepare("SELECT COUNT(*) FROM %i", $table_name)
+    );
     
     if ($count == 0) {
         // Dodanie kilku przykładowych cytatów
@@ -110,7 +111,10 @@ function losowe_cytaty_get_all_quotes() {
         $table_name = $wpdb->prefix . 'losowe_cytaty';
         $table_name_esc = esc_sql($table_name);
         
-        $quotes = $wpdb->get_results("SELECT * FROM `{$table_name_esc}` ORDER BY id DESC", ARRAY_A);
+        $quotes = $wpdb->get_results(
+            $wpdb->prepare("SELECT * FROM %i ORDER BY id DESC", $table_name),
+            ARRAY_A
+        );
         
         // Zapisanie do cache na 1 godzinę (3600 sekund)
         wp_cache_set($cache_key, $quotes, '', 3600);
@@ -137,9 +141,8 @@ function losowe_cytaty_get_quote_by_id($id) {
         global $wpdb;
         $table_name = $wpdb->prefix . 'losowe_cytaty';
         
-        $table_name_esc = esc_sql($table_name);
         $quote = $wpdb->get_row(
-            $wpdb->prepare("SELECT * FROM `{$table_name_esc}` WHERE id = %d", $id),
+            $wpdb->prepare("SELECT * FROM %i WHERE id = %d", $table_name, $id),
             ARRAY_A
         );
         
@@ -243,7 +246,9 @@ function losowe_cytaty_select_random_quote() {
     $count = wp_cache_get($cache_key);
     
     if ($count === false) {
-        $count = $wpdb->get_var("SELECT COUNT(*) FROM `{$table_name_esc}`");
+        $count = $wpdb->get_var(
+            $wpdb->prepare("SELECT COUNT(*) FROM %i", $table_name)
+        );
         wp_cache_set($cache_key, $count, '', 3600);
     }
     
@@ -252,7 +257,10 @@ function losowe_cytaty_select_random_quote() {
     }
     
     // Losowanie cytatu - zawsze losujemy nowy cytat przy wywołaniu tej funkcji
-    $quote = $wpdb->get_row("SELECT * FROM `{$table_name_esc}` ORDER BY RAND() LIMIT 1", ARRAY_A);
+    $quote = $wpdb->get_row(
+        $wpdb->prepare("SELECT * FROM %i ORDER BY RAND() LIMIT 1", $table_name),
+        ARRAY_A
+    );
     
     if ($quote) {
         // Zapisanie ID wylosowanego cytatu
