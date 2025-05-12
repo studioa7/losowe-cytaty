@@ -1,6 +1,6 @@
 === Losowe Cytaty ===
 Contributors: dawidziolkowski, studioa7
-Tags: cytaty, elementor, widget, losowanie, quotes
+Tags: cytaty, elementor, widget, losowanie, quotes, hello, dolly
 Requires at least: 5.0
 Tested up to: 6.5
 Requires PHP: 7.0
