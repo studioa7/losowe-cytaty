@@ -4,7 +4,7 @@ Tags: cytaty, elementor, widget, losowanie, quotes
 Requires at least: 5.0
 Tested up to: 6.5
 Requires PHP: 7.0
-Stable tag: 1.0.1
+Stable tag: 1.0.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -102,6 +102,12 @@ Jeśli po instalacji wtyczka nie działa poprawnie:
 4. Panel administracyjny - ustawienia i ręczne losowanie cytatu.
 
 == Changelog ==
+
+= 1.0.2 =
+* Poprawiono błędy związane z bezpieczeństwem zapytań SQL.
+* Dodano prawidłową sanityzację danych wejściowych.
+* Poprawiono nazwę Studio A7 we wszystkich miejscach.
+* Usunięto nieużywane zmienne i zaktualizowano komentarze.
 
 = 1.0.1 =
 * Poprawiono mechanizm losowania cytatu raz dziennie.

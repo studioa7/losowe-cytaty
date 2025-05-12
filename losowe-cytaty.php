@@ -3,7 +3,7 @@
  * Plugin Name: Losowe Cytaty
  * Plugin URI: https://wordpress.org/plugins/losowe-cytaty
  * Description: Wtyczka dodająca widżet do wyświetlania losowych cytatów. Kompatybilna z Elementorem oraz standardowym edytorem WordPress.
- * Version: 1.0.1
+ * Version: 1.0.2
  * Author: Dawid Ziółkowski, Studio A7
  * Author URI: https://studioa7.pl
  * Text Domain: losowe-cytaty
@@ -20,7 +20,7 @@ if (!defined('ABSPATH')) {
 }
 
 // Definicje stałych
-define('LOSOWE_CYTATY_VERSION', '1.0.1');
+define('LOSOWE_CYTATY_VERSION', '1.0.2');
 define('LOSOWE_CYTATY_PATH', plugin_dir_path(__FILE__));
 define('LOSOWE_CYTATY_URL', plugin_dir_url(__FILE__));
 define('LOSOWE_CYTATY_BASENAME', plugin_basename(__FILE__));
@@ -261,9 +261,7 @@ function losowe_cytaty_uninstall() {
     
     if ($table_exists) {
         // W przypadku nazw tabel, WordPress nie zaleca używania placeholderów
-        // Bezpieczne usunięcie tabeli z użyciem prawidłowo zbudowanej nazwy tabeli
-        // W przypadku nazw tabel, WordPress zaleca używanie esc_sql zamiast placeholderów
-        // Bezpieczne usunięcie tabeli z prawidłowo zabezpieczoną nazwą
+        // Bezpieczne usunięcie tabeli z użyciem $wpdb->prepare i placeholdera %i dla nazwy tabeli
         // Użycie $wpdb->prepare z WPDB::prepare_table_name() dla nazwy tabeli
         $wpdb->query($wpdb->prepare("DROP TABLE IF EXISTS %i", $table_name));
         

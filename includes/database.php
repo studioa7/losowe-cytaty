@@ -79,7 +79,6 @@ function losowe_cytaty_add_quote($quote, $author = '') {
 function losowe_cytaty_add_default_quotes() {
     global $wpdb;
     $table_name = $wpdb->prefix . 'losowe_cytaty';
-    $table_name_esc = esc_sql($table_name);
     
     // Sprawdzenie czy tabela jest pusta
     $count = $wpdb->get_var(
@@ -109,7 +108,6 @@ function losowe_cytaty_get_all_quotes() {
     if ($quotes === false) {
         global $wpdb;
         $table_name = $wpdb->prefix . 'losowe_cytaty';
-        $table_name_esc = esc_sql($table_name);
         
         $quotes = $wpdb->get_results(
             $wpdb->prepare("SELECT * FROM %i ORDER BY id DESC", $table_name),
@@ -239,7 +237,6 @@ function losowe_cytaty_update_quote($id, $quote, $author = '') {
 function losowe_cytaty_select_random_quote() {
     global $wpdb;
     $table_name = $wpdb->prefix . 'losowe_cytaty';
-    $table_name_esc = esc_sql($table_name);
     
     // Sprawdzenie liczby cytatów - użycie cache
     $cache_key = 'losowe_cytaty_count';
