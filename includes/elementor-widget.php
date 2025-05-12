@@ -147,9 +147,12 @@ function losowe_cytaty_elementor_styles() {
         return;
     }
     
+    // Określenie czy używać wersji minifikowanych czy nie
+    $suffix = defined('SCRIPT_DEBUG') && SCRIPT_DEBUG ? '' : '.min';
+    
     wp_enqueue_style(
         'losowe-cytaty-elementor',
-        LOSOWE_CYTATY_URL . 'assets/css/elementor-widget.css',
+        LOSOWE_CYTATY_URL . 'assets/css/elementor-widget' . $suffix . '.css',
         array(),
         LOSOWE_CYTATY_VERSION
     );

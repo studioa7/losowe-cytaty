@@ -4,7 +4,7 @@
  * Plugin URI: https://wordpress.org/plugins/losowe-cytaty
  * Description: Wtyczka dodająca widżet do wyświetlania losowych cytatów. Kompatybilna z Elementorem oraz standardowym edytorem WordPress.
  * Version: 1.0.1
- * Author: Dawid Ziółkowski
+ * Author: Dawid Ziółkowski, Studio A&7
  * Author URI: https://studioa7.pl
  * Text Domain: losowe-cytaty
  * Domain Path: /languages
@@ -20,7 +20,7 @@ if (!defined('ABSPATH')) {
 }
 
 // Definicje stałych
-define('LOSOWE_CYTATY_VERSION', '1.0.0');
+define('LOSOWE_CYTATY_VERSION', '1.0.1');
 define('LOSOWE_CYTATY_PATH', plugin_dir_path(__FILE__));
 define('LOSOWE_CYTATY_URL', plugin_dir_url(__FILE__));
 define('LOSOWE_CYTATY_BASENAME', plugin_basename(__FILE__));
@@ -89,9 +89,12 @@ class Losowe_Cytaty_WP_Widget extends WP_Widget {
      * Dodanie stylów dla widżetu
      */
     public function enqueue_styles() {
+        // Określenie czy używać wersji minifikowanych czy nie
+        $suffix = defined('SCRIPT_DEBUG') && SCRIPT_DEBUG ? '' : '.min';
+        
         wp_enqueue_style(
             'losowe-cytaty-widget',
-            LOSOWE_CYTATY_URL . 'assets/css/elementor-widget.css',
+            LOSOWE_CYTATY_URL . 'assets/css/elementor-widget' . $suffix . '.css',
             array(),
             LOSOWE_CYTATY_VERSION
         );
@@ -120,11 +123,11 @@ class Losowe_Cytaty_WP_Widget extends WP_Widget {
                 $classes .= ' show-quote-icon';
             }
             
-            echo '<blockquote class="' . esc_attr($classes) . '">';
+            echo '<blockquote class="' . esc_attr($classes) . '" aria-label="' . esc_attr__('Losowy cytat', 'losowe-cytaty') . '">';
             echo '<p>' . esc_html($quote['quote']) . '</p>';
             
             if ($show_author && !empty($quote['author'])) {
-                echo '<cite>— ' . esc_html($quote['author']) . '</cite>';
+                echo '<cite aria-label="' . esc_attr__('Autor cytatu', 'losowe-cytaty') . '">— ' . esc_html($quote['author']) . '</cite>';
             }
             
             echo '</blockquote>';
@@ -195,11 +198,11 @@ function losowe_cytaty_shortcode($atts) {
         return '<div class="losowe-cytaty-empty">' . __('Brak cytatów w bazie danych.', 'losowe-cytaty') . '</div>';
     }
     
-    $output = '<blockquote class="losowe-cytaty-quote">';
+    $output = '<blockquote class="losowe-cytaty-quote" aria-label="' . esc_attr__('Losowy cytat', 'losowe-cytaty') . '">';
     $output .= '<p>' . esc_html($quote['quote']) . '</p>';
     
     if ($show_author && !empty($quote['author'])) {
-        $output .= '<cite>— ' . esc_html($quote['author']) . '</cite>';
+        $output .= '<cite aria-label="' . esc_attr__('Autor cytatu', 'losowe-cytaty') . '">— ' . esc_html($quote['author']) . '</cite>';
     }
     
     $output .= '</blockquote>';

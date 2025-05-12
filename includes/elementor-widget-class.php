@@ -359,11 +359,11 @@ class Losowe_Cytaty_Widget extends \Elementor\Widget_Base {
         
         ?>
         <div <?php echo esc_attr($this->get_render_attribute_string('wrapper')); ?>>
-            <blockquote class="losowe-cytaty-quote">
+            <blockquote class="losowe-cytaty-quote" aria-label="<?php esc_attr_e('Losowy cytat', 'losowe-cytaty'); ?>">
                 <p><?php echo esc_html($quote['quote']); ?></p>
                 
                 <?php if ($show_author && !empty($quote['author'])): ?>
-                    <cite>— <?php echo esc_html($quote['author']); ?></cite>
+                    <cite aria-label="<?php esc_attr_e('Autor cytatu', 'losowe-cytaty'); ?>">— <?php echo esc_html($quote['author']); ?></cite>
                 <?php endif; ?>
             </blockquote>
         </div>

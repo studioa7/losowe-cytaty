@@ -62,10 +62,13 @@ function losowe_cytaty_admin_enqueue_scripts($hook) {
         return;
     }
     
+    // Określenie czy używać wersji minifikowanych czy nie
+    $suffix = defined('SCRIPT_DEBUG') && SCRIPT_DEBUG ? '' : '.min';
+    
     // Dodanie stylów
     wp_enqueue_style(
         'losowe-cytaty-admin',
-        LOSOWE_CYTATY_URL . 'assets/css/admin.css',
+        LOSOWE_CYTATY_URL . 'assets/css/admin' . $suffix . '.css',
         array(),
         LOSOWE_CYTATY_VERSION
     );
@@ -73,7 +76,7 @@ function losowe_cytaty_admin_enqueue_scripts($hook) {
     // Dodanie skryptów
     wp_enqueue_script(
         'losowe-cytaty-admin',
-        LOSOWE_CYTATY_URL . 'assets/js/admin.js',
+        LOSOWE_CYTATY_URL . 'assets/js/admin' . $suffix . '.js',
         array('jquery'),
         LOSOWE_CYTATY_VERSION,
         true
