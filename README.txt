@@ -1,10 +1,10 @@
 === Losowe Cytaty ===
 Contributors: dawidziolkowski, studioa7
 Tags: cytaty, elementor, widget, losowanie, quotes
-Requires at least: 5.0
+Requires at least: 6.2
 Tested up to: 6.5
 Requires PHP: 7.0
-Stable tag: 1.0.2
+Stable tag: 1.0.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -27,7 +27,7 @@ Wtyczka została stworzona przez Studio A7 (https://studioa7.pl) - agencję spec
 
 = Wymagania =
 
-* WordPress 5.0 lub nowszy
+* WordPress 6.2 lub nowszy (wymagany dla obsługi placeholdera %i w zapytaniach SQL)
 * Elementor 3.0.0 lub nowszy
 * PHP 7.0 lub nowszy
 
@@ -102,6 +102,12 @@ Jeśli po instalacji wtyczka nie działa poprawnie:
 4. Panel administracyjny - ustawienia i ręczne losowanie cytatu.
 
 == Changelog ==
+
+= 1.0.3 =
+* Zaktualizowano wymagania do WordPress 6.2 lub nowszego.
+* Wykorzystano nowoczesny placeholder %i w zapytaniach SQL.
+* Poprawiono pozostałe błędy związane z bezpieczeństwem.
+* Zapewniono spójność domeny tekstowej 'losowe-cytaty'.
 
 = 1.0.2 =
 * Poprawiono błędy związane z bezpieczeństwem zapytań SQL.

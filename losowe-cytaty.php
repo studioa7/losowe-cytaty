@@ -3,7 +3,7 @@
  * Plugin Name: Losowe Cytaty
  * Plugin URI: https://wordpress.org/plugins/losowe-cytaty
  * Description: Wtyczka dodająca widżet do wyświetlania losowych cytatów. Kompatybilna z Elementorem oraz standardowym edytorem WordPress.
- * Version: 1.0.2
+ * Version: 1.0.3
  * Author: Dawid Ziółkowski, Studio A7
  * Author URI: https://studioa7.pl
  * Text Domain: losowe-cytaty
@@ -20,7 +20,7 @@ if (!defined('ABSPATH')) {
 }
 
 // Definicje stałych
-define('LOSOWE_CYTATY_VERSION', '1.0.2');
+define('LOSOWE_CYTATY_VERSION', '1.0.3');
 define('LOSOWE_CYTATY_PATH', plugin_dir_path(__FILE__));
 define('LOSOWE_CYTATY_URL', plugin_dir_url(__FILE__));
 define('LOSOWE_CYTATY_BASENAME', plugin_basename(__FILE__));
