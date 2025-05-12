@@ -82,7 +82,9 @@ function losowe_cytaty_add_default_quotes() {
     $table_name_esc = esc_sql($table_name);
     
     // Sprawdzenie czy tabela jest pusta
-    $count = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM %i", $table_name_esc));
+    $count = $wpdb->get_var(
+        $wpdb->prepare("SELECT COUNT(*) FROM %i", $table_name)
+    );
     
     if ($count == 0) {
         // Dodanie kilku przykładowych cytatów
@@ -109,7 +111,10 @@ function losowe_cytaty_get_all_quotes() {
         $table_name = $wpdb->prefix . 'losowe_cytaty';
         $table_name_esc = esc_sql($table_name);
         
-        $quotes = $wpdb->get_results($wpdb->prepare("SELECT * FROM %i ORDER BY id DESC", $table_name_esc), ARRAY_A);
+        $quotes = $wpdb->get_results(
+            $wpdb->prepare("SELECT * FROM %i ORDER BY id DESC", $table_name),
+            ARRAY_A
+        );
         
         // Zapisanie do cache na 1 godzinę (3600 sekund)
         wp_cache_set($cache_key, $quotes, '', 3600);
@@ -136,9 +141,8 @@ function losowe_cytaty_get_quote_by_id($id) {
         global $wpdb;
         $table_name = $wpdb->prefix . 'losowe_cytaty';
         
-        $table_name_esc = esc_sql($table_name);
         $quote = $wpdb->get_row(
-            $wpdb->prepare("SELECT * FROM %i WHERE id = %d", $table_name_esc, $id),
+            $wpdb->prepare("SELECT * FROM %i WHERE id = %d", $table_name, $id),
             ARRAY_A
         );
         
@@ -242,7 +246,9 @@ function losowe_cytaty_select_random_quote() {
     $count = wp_cache_get($cache_key);
     
     if ($count === false) {
-        $count = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM %i", $table_name_esc));
+        $count = $wpdb->get_var(
+            $wpdb->prepare("SELECT COUNT(*) FROM %i", $table_name)
+        );
         wp_cache_set($cache_key, $count, '', 3600);
     }
     
@@ -250,24 +256,19 @@ function losowe_cytaty_select_random_quote() {
         return null;
     }
     
-    // Sprawdzenie cache dla losowego cytatu
-    $cache_key = 'losowe_cytaty_random_quote';
-    $quote = wp_cache_get($cache_key);
-    
-    if ($quote === false) {
-        // Losowanie cytatu
-        $quote = $wpdb->get_row($wpdb->prepare("SELECT * FROM %i ORDER BY RAND() LIMIT 1", $table_name_esc), ARRAY_A);
-        
-        // Zapisanie do cache na krótki czas (60 sekund)
-        if ($quote) {
-            wp_cache_set($cache_key, $quote, '', 60);
-        }
-    }
+    // Losowanie cytatu - zawsze losujemy nowy cytat przy wywołaniu tej funkcji
+    $quote = $wpdb->get_row(
+        $wpdb->prepare("SELECT * FROM %i ORDER BY RAND() LIMIT 1", $table_name),
+        ARRAY_A
+    );
     
     if ($quote) {
         // Zapisanie ID wylosowanego cytatu
         update_option('losowe_cytaty_current_quote_id', $quote['id']);
         update_option('losowe_cytaty_last_change_date', current_time('timestamp'));
+        
+        // Wyczyszczenie cache dla aktualnego cytatu, aby wymusić pobranie nowego
+        wp_cache_delete('losowe_cytaty_current_quote');
     }
     
     return $quote;
