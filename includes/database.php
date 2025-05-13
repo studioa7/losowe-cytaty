@@ -284,6 +284,16 @@ function losowe_cytaty_get_current_quote() {
         return losowe_cytaty_select_random_quote();
     }
     
+    // Sprawdzenie, czy minął czas od ostatniego odświeżenia
+    $last_change = get_option('losowe_cytaty_last_change_date', 0);
+    $cache_time = losowe_cytaty_get_cache_time($frequency);
+    $current_time = current_time('timestamp');
+    
+    // Jeśli minął czas od ostatniego odświeżenia, wylosuj nowy cytat
+    if (($current_time - $last_change) > $cache_time) {
+        return losowe_cytaty_select_random_quote();
+    }
+    
     // Sprawdzenie cache
     $cache_key = 'losowe_cytaty_current_quote';
     $current_quote = wp_cache_get($cache_key);
@@ -333,6 +343,8 @@ function losowe_cytaty_get_current_quote() {
  */
 function losowe_cytaty_get_cache_time($frequency) {
     switch ($frequency) {
+        case 'one_minute':
+            return 60; // 1 minuta
         case 'five_minutes':
             return 300; // 5 minut
         case 'quarter_hour':

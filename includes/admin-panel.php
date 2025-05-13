@@ -489,6 +489,7 @@ function losowe_cytaty_settings_page() {
                                         'half_hour' => esc_html__('Raz na pół godziny', 'losowe-cytaty'),
                                         'quarter_hour' => esc_html__('Raz na kwadrans', 'losowe-cytaty'),
                                         'five_minutes' => esc_html__('Raz na 5 minut', 'losowe-cytaty'),
+                                        'one_minute' => esc_html__('Raz na 1 minutę', 'losowe-cytaty'),
                                         'on_reload' => esc_html__('Przy przeładowaniu strony', 'losowe-cytaty'),
                                     );
                                     
@@ -498,6 +499,58 @@ function losowe_cytaty_settings_page() {
                                     ?>
                                 </select>
                                 <p class="description"><?php esc_html_e('Wybierz, jak często cytat ma być automatycznie odświeżany.', 'losowe-cytaty'); ?></p>
+                                
+                                <?php if (current_user_can('manage_options')): ?>
+                                <div class="debug-info" style="margin-top: 10px; padding: 10px; background: #f8f8f8; border-left: 4px solid #646970;">
+                                    <h4><?php esc_html_e('Informacje debugowania', 'losowe-cytaty'); ?></h4>
+                                    <?php
+                                    $last_change = get_option('losowe_cytaty_last_change_date', 0);
+                                    $frequency = get_option('losowe_cytaty_refresh_frequency', 'daily');
+                                    $cache_time = 0;
+                                    
+                                    if ($frequency !== 'on_reload') {
+                                        require_once LOSOWE_CYTATY_PATH . 'includes/database.php';
+                                        $cache_time = losowe_cytaty_get_cache_time($frequency);
+                                    }
+                                    
+                                    $current_time = current_time('timestamp');
+                                    $time_diff = $current_time - $last_change;
+                                    $time_to_next = $cache_time - $time_diff;
+                                    
+                                    if ($frequency === 'on_reload') {
+                                        printf(
+                                            '<p>%s</p>',
+                                            esc_html__('Tryb odświeżania: przy przeładowaniu strony (cytat jest losowany przy każdym odświeżeniu strony)', 'losowe-cytaty')
+                                        );
+                                    } else {
+                                        printf(
+                                            '<p>%s: %s</p>',
+                                            esc_html__('Ostatnie odświeżenie', 'losowe-cytaty'),
+                                            esc_html(date_i18n('Y-m-d H:i:s', $last_change))
+                                        );
+                                        
+                                        printf(
+                                            '<p>%s: %s</p>',
+                                            esc_html__('Czas od ostatniego odświeżenia', 'losowe-cytaty'),
+                                            esc_html(human_time_diff($last_change, $current_time))
+                                        );
+                                        
+                                        if ($time_to_next > 0) {
+                                            printf(
+                                                '<p>%s: %s</p>',
+                                                esc_html__('Czas do następnego odświeżenia', 'losowe-cytaty'),
+                                                esc_html(human_time_diff($current_time, $current_time + $time_to_next))
+                                            );
+                                        } else {
+                                            printf(
+                                                '<p>%s</p>',
+                                                esc_html__('Cytat powinien zostać odświeżony przy następnym odświeżeniu strony', 'losowe-cytaty')
+                                            );
+                                        }
+                                    }
+                                    ?>
+                                </div>
+                                <?php endif; ?>
                             </td>
                         </tr>
                     </table>

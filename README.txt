@@ -4,7 +4,7 @@ Tags: cytaty, elementor, widget, losowanie, quotes
 Requires at least: 6.2
 Tested up to: 6.5
 Requires PHP: 7.0
-Stable tag: 1.0.6
+Stable tag: 1.0.7
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -125,6 +125,12 @@ Jeśli po instalacji wtyczka nie działa poprawnie:
 4. Panel administracyjny - ustawienia i ręczne losowanie cytatu.
 
 == Changelog ==
+
+= 1.0.7 =
+* Dodano opcję odświeżania cytatu co 1 minutę dla łatwiejszego testowania.
+* Poprawiono mechanizm odświeżania cytatów, aby działał niezależnie od WordPress Cron.
+* Dodano panel informacji debugowania w ustawieniach wtyczki.
+* Poprawiono błędy bezpieczeństwa związane z escapowaniem danych wyjściowych.
 
 = 1.0.6 =
 * Dodano możliwość zmiany koloru i szerokości lewego obramowania w widżecie Elementora.
