@@ -16,6 +16,16 @@ if (!defined('ABSPATH')) {
 function losowe_cytaty_settings_init() {
     // Rejestracja ustawień
     register_setting('losowe_cytaty_settings', 'losowe_cytaty_refresh_frequency');
+    
+    // Rejestracja ustawień stylów
+    register_setting('losowe_cytaty_settings', 'losowe_cytaty_text_color');
+    register_setting('losowe_cytaty_settings', 'losowe_cytaty_background_color');
+    register_setting('losowe_cytaty_settings', 'losowe_cytaty_border_color');
+    register_setting('losowe_cytaty_settings', 'losowe_cytaty_border_width');
+    register_setting('losowe_cytaty_settings', 'losowe_cytaty_border_radius');
+    register_setting('losowe_cytaty_settings', 'losowe_cytaty_author_color');
+    register_setting('losowe_cytaty_settings', 'losowe_cytaty_quote_icon_color');
+    register_setting('losowe_cytaty_settings', 'losowe_cytaty_show_quote_icon');
 }
 add_action('admin_init', 'losowe_cytaty_settings_init');
 
@@ -491,6 +501,67 @@ function losowe_cytaty_settings_page() {
                             </td>
                         </tr>
                     </table>
+                    
+                    <h3><?php esc_html_e('Style cytatu', 'losowe-cytaty'); ?></h3>
+                    <table class="form-table">
+                        <tr valign="top">
+                            <th scope="row"><?php esc_html_e('Kolor tekstu', 'losowe-cytaty'); ?></th>
+                            <td>
+                                <input type="color" name="losowe_cytaty_text_color" value="<?php echo esc_attr(get_option('losowe_cytaty_text_color', '#333333')); ?>" class="color-picker" />
+                                <p class="description"><?php esc_html_e('Wybierz kolor tekstu cytatu.', 'losowe-cytaty'); ?></p>
+                            </td>
+                        </tr>
+                        <tr valign="top">
+                            <th scope="row"><?php esc_html_e('Kolor tła', 'losowe-cytaty'); ?></th>
+                            <td>
+                                <input type="color" name="losowe_cytaty_background_color" value="<?php echo esc_attr(get_option('losowe_cytaty_background_color', '#f9f9f9')); ?>" class="color-picker" />
+                                <p class="description"><?php esc_html_e('Wybierz kolor tła cytatu.', 'losowe-cytaty'); ?></p>
+                            </td>
+                        </tr>
+                        <tr valign="top">
+                            <th scope="row"><?php esc_html_e('Kolor obramowania', 'losowe-cytaty'); ?></th>
+                            <td>
+                                <input type="color" name="losowe_cytaty_border_color" value="<?php echo esc_attr(get_option('losowe_cytaty_border_color', '#2271b1')); ?>" class="color-picker" />
+                                <p class="description"><?php esc_html_e('Wybierz kolor obramowania cytatu.', 'losowe-cytaty'); ?></p>
+                            </td>
+                        </tr>
+                        <tr valign="top">
+                            <th scope="row"><?php esc_html_e('Szerokość obramowania (px)', 'losowe-cytaty'); ?></th>
+                            <td>
+                                <input type="number" name="losowe_cytaty_border_width" value="<?php echo esc_attr(get_option('losowe_cytaty_border_width', '4')); ?>" min="0" max="20" step="1" />
+                                <p class="description"><?php esc_html_e('Ustaw szerokość obramowania w pikselach.', 'losowe-cytaty'); ?></p>
+                            </td>
+                        </tr>
+                        <tr valign="top">
+                            <th scope="row"><?php esc_html_e('Zaokrąglenie narożników (px)', 'losowe-cytaty'); ?></th>
+                            <td>
+                                <input type="number" name="losowe_cytaty_border_radius" value="<?php echo esc_attr(get_option('losowe_cytaty_border_radius', '0')); ?>" min="0" max="50" step="1" />
+                                <p class="description"><?php esc_html_e('Ustaw zaokrąglenie narożników w pikselach.', 'losowe-cytaty'); ?></p>
+                            </td>
+                        </tr>
+                        <tr valign="top">
+                            <th scope="row"><?php esc_html_e('Kolor autora', 'losowe-cytaty'); ?></th>
+                            <td>
+                                <input type="color" name="losowe_cytaty_author_color" value="<?php echo esc_attr(get_option('losowe_cytaty_author_color', '#666666')); ?>" class="color-picker" />
+                                <p class="description"><?php esc_html_e('Wybierz kolor tekstu autora.', 'losowe-cytaty'); ?></p>
+                            </td>
+                        </tr>
+                        <tr valign="top">
+                            <th scope="row"><?php esc_html_e('Pokaż ikonę cytatu', 'losowe-cytaty'); ?></th>
+                            <td>
+                                <input type="checkbox" name="losowe_cytaty_show_quote_icon" value="1" <?php checked('1', get_option('losowe_cytaty_show_quote_icon', '1')); ?> />
+                                <p class="description"><?php esc_html_e('Zaznacz, aby wyświetlać ikonę cytatu.', 'losowe-cytaty'); ?></p>
+                            </td>
+                        </tr>
+                        <tr valign="top" class="quote-icon-color-row" <?php echo get_option('losowe_cytaty_show_quote_icon', '1') ? '' : 'style="display:none;"'; ?>>
+                            <th scope="row"><?php esc_html_e('Kolor ikony cytatu', 'losowe-cytaty'); ?></th>
+                            <td>
+                                <input type="color" name="losowe_cytaty_quote_icon_color" value="<?php echo esc_attr(get_option('losowe_cytaty_quote_icon_color', '#e0e0e0')); ?>" class="color-picker" />
+                                <p class="description"><?php esc_html_e('Wybierz kolor ikony cytatu.', 'losowe-cytaty'); ?></p>
+                            </td>
+                        </tr>
+                    </table>
+                    
                     <?php submit_button(); ?>
                 </form>
                 

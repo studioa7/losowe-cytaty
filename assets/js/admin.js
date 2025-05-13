@@ -29,6 +29,89 @@
                 }
             });
         }
+        
+        // Obsługa pokazywania/ukrywania opcji koloru ikony cytatu
+        var $showQuoteIcon = $('input[name="losowe_cytaty_show_quote_icon"]');
+        if ($showQuoteIcon.length) {
+            // Inicjalizacja stanu
+            toggleQuoteIconColorRow($showQuoteIcon.is(':checked'));
+            
+            // Obsługa zmiany stanu
+            $showQuoteIcon.on('change', function() {
+                toggleQuoteIconColorRow($(this).is(':checked'));
+            });
+        }
+        
+        // Inicjalizacja podglądu cytatu w ustawieniach
+        initQuotePreview();
+    }
+    
+    // Funkcja pokazująca/ukrywająca opcję koloru ikony cytatu
+    function toggleQuoteIconColorRow(show) {
+        var $quoteIconColorRow = $('.quote-icon-color-row');
+        if (show) {
+            $quoteIconColorRow.show();
+        } else {
+            $quoteIconColorRow.hide();
+        }
+    }
+    
+    // Funkcja inicjalizująca podgląd cytatu w ustawieniach
+    function initQuotePreview() {
+        // Pobieranie elementów formularza
+        var $textColor = $('input[name="losowe_cytaty_text_color"]');
+        var $backgroundColor = $('input[name="losowe_cytaty_background_color"]');
+        var $borderColor = $('input[name="losowe_cytaty_border_color"]');
+        var $borderWidth = $('input[name="losowe_cytaty_border_width"]');
+        var $borderRadius = $('input[name="losowe_cytaty_border_radius"]');
+        var $authorColor = $('input[name="losowe_cytaty_author_color"]');
+        var $showQuoteIcon = $('input[name="losowe_cytaty_show_quote_icon"]');
+        var $quoteIconColor = $('input[name="losowe_cytaty_quote_icon_color"]');
+        
+        // Jeśli elementy istnieją, dodaj obsługę podglądu na żywo
+        if ($textColor.length && $('.current-quote-display').length) {
+            // Funkcja aktualizująca style
+            function updateQuoteStyles() {
+                var $quote = $('.current-quote-display blockquote');
+                var $quoteText = $quote.find('p');
+                var $quoteAuthor = $quote.find('cite');
+                
+                // Aktualizacja stylów cytatu
+                $quote.css({
+                    'background-color': $backgroundColor.val(),
+                    'border-left-color': $borderColor.val(),
+                    'border-left-width': $borderWidth.val() + 'px',
+                    'border-radius': $borderRadius.val() + 'px'
+                });
+                
+                // Aktualizacja koloru tekstu
+                $quoteText.css('color', $textColor.val());
+                
+                // Aktualizacja koloru autora
+                if ($quoteAuthor.length) {
+                    $quoteAuthor.css('color', $authorColor.val());
+                }
+                
+                // Obsługa ikony cytatu
+                if ($showQuoteIcon.is(':checked')) {
+                    $quote.addClass('show-quote-icon');
+                    $quote.css('--quote-icon-color', $quoteIconColor.val());
+                } else {
+                    $quote.removeClass('show-quote-icon');
+                }
+            }
+            
+            // Dodanie obsługi zdarzeń dla wszystkich pól
+            $textColor.add($backgroundColor).add($borderColor).add($borderWidth)
+                .add($borderRadius).add($authorColor).add($showQuoteIcon).add($quoteIconColor)
+                .on('input change', updateQuoteStyles);
+            
+            // Inicjalizacja stylów
+            updateQuoteStyles();
+            
+            // Dodanie stylu dla ikony cytatu
+            $('<style>.current-quote-display blockquote.show-quote-icon:before { color: var(--quote-icon-color, #e0e0e0); }</style>').appendTo('head');
+        }
     }
     
     // Funkcja losująca cytat przez AJAX

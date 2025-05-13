@@ -3,7 +3,7 @@
  * Plugin Name: Losowe Cytaty
  * Plugin URI: https://wordpress.org/plugins/losowe-cytaty
  * Description: Wtyczka dodająca widżet do wyświetlania losowych cytatów. Kompatybilna z Elementorem oraz standardowym edytorem WordPress.
- * Version: 1.0.4
+ * Version: 1.0.5
  * Author: Dawid Ziółkowski, Studio A7
  * Author URI: https://studioa7.pl
  * Text Domain: losowe-cytaty
@@ -20,7 +20,7 @@ if (!defined('ABSPATH')) {
 }
 
 // Definicje stałych
-define('LOSOWE_CYTATY_VERSION', '1.0.4');
+define('LOSOWE_CYTATY_VERSION', '1.0.5');
 define('LOSOWE_CYTATY_PATH', plugin_dir_path(__FILE__));
 define('LOSOWE_CYTATY_URL', plugin_dir_url(__FILE__));
 define('LOSOWE_CYTATY_BASENAME', plugin_basename(__FILE__));
@@ -123,6 +123,13 @@ class Losowe_Cytaty_WP_Widget extends WP_Widget {
                 $classes .= ' show-quote-icon';
             }
             
+            // Dodanie klasy dla widżetu, aby można było zastosować style dla ikony cytatu
+            $widget_classes = 'losowe-cytaty-widget';
+            if ($show_quote_icon) {
+                $widget_classes .= ' show-quote-icon';
+            }
+            
+            echo '<div class="' . esc_attr($widget_classes) . '">';
             echo '<blockquote class="' . esc_attr($classes) . '" aria-label="' . esc_attr__('Losowy cytat', 'losowe-cytaty') . '">';
             echo '<p>' . esc_html($quote['quote']) . '</p>';
             
@@ -131,6 +138,7 @@ class Losowe_Cytaty_WP_Widget extends WP_Widget {
             }
             
             echo '</blockquote>';
+            echo '</div>'; // Zamknięcie div.losowe-cytaty-widget
         }
         
         echo wp_kses_post($args['after_widget']);
@@ -217,9 +225,11 @@ function losowe_cytaty_register_wp_widget() {
 function losowe_cytaty_shortcode($atts) {
     $atts = shortcode_atts(array(
         'show_author' => 'true',
+        'show_quote_icon' => get_option('losowe_cytaty_show_quote_icon', '1') ? 'true' : 'false',
     ), $atts, 'losowy_cytat');
     
     $show_author = filter_var($atts['show_author'], FILTER_VALIDATE_BOOLEAN);
+    $show_quote_icon = filter_var($atts['show_quote_icon'], FILTER_VALIDATE_BOOLEAN);
     
     $quote = losowe_cytaty_get_current_quote();
     
@@ -227,7 +237,19 @@ function losowe_cytaty_shortcode($atts) {
         return '<div class="losowe-cytaty-empty">' . __('Brak cytatów w bazie danych.', 'losowe-cytaty') . '</div>';
     }
     
-    $output = '<blockquote class="losowe-cytaty-quote" aria-label="' . esc_attr__('Losowy cytat', 'losowe-cytaty') . '">';
+    $classes = 'losowe-cytaty-quote';
+    if ($show_quote_icon) {
+        $classes .= ' show-quote-icon';
+    }
+    
+    // Dodanie klasy dla widżetu, aby można było zastosować style dla ikony cytatu
+    $widget_classes = 'losowe-cytaty-widget';
+    if ($show_quote_icon) {
+        $widget_classes .= ' show-quote-icon';
+    }
+    
+    $output = '<div class="' . esc_attr($widget_classes) . '">';
+    $output .= '<blockquote class="' . esc_attr($classes) . '" aria-label="' . esc_attr__('Losowy cytat', 'losowe-cytaty') . '">';
     $output .= '<p>' . esc_html($quote['quote']) . '</p>';
     
     if ($show_author && !empty($quote['author'])) {
@@ -235,6 +257,7 @@ function losowe_cytaty_shortcode($atts) {
     }
     
     $output .= '</blockquote>';
+    $output .= '</div>'; // Zamknięcie div.losowe-cytaty-widget
     
     return $output;
 }
@@ -273,6 +296,16 @@ function losowe_cytaty_activate() {
     
     // Ustawienie domyślnej częstotliwości odświeżania
     add_option('losowe_cytaty_refresh_frequency', 'daily');
+    
+    // Ustawienie domyślnych opcji stylizacji
+    add_option('losowe_cytaty_text_color', '#333333');
+    add_option('losowe_cytaty_background_color', '#f9f9f9');
+    add_option('losowe_cytaty_border_color', '#2271b1');
+    add_option('losowe_cytaty_border_width', '4');
+    add_option('losowe_cytaty_border_radius', '0');
+    add_option('losowe_cytaty_author_color', '#666666');
+    add_option('losowe_cytaty_show_quote_icon', '1');
+    add_option('losowe_cytaty_quote_icon_color', '#e0e0e0');
     
     // Ustawienie opcji dla losowania cytatu
     losowe_cytaty_schedule_quote_refresh();
@@ -365,6 +398,16 @@ function losowe_cytaty_uninstall() {
     delete_option('losowe_cytaty_missing_elementor_classes');
     delete_option('losowe_cytaty_widget_load_error');
     delete_option('losowe_cytaty_refresh_frequency');
+    
+    // Usunięcie opcji stylizacji
+    delete_option('losowe_cytaty_text_color');
+    delete_option('losowe_cytaty_background_color');
+    delete_option('losowe_cytaty_border_color');
+    delete_option('losowe_cytaty_border_width');
+    delete_option('losowe_cytaty_border_radius');
+    delete_option('losowe_cytaty_author_color');
+    delete_option('losowe_cytaty_show_quote_icon');
+    delete_option('losowe_cytaty_quote_icon_color');
 }
 register_uninstall_hook(__FILE__, 'losowe_cytaty_uninstall');
 
@@ -399,3 +442,59 @@ function losowe_cytaty_check_languages_dir() {
 }
 add_action('plugins_loaded', 'losowe_cytaty_check_languages_dir', 5);
 add_action('plugins_loaded', 'losowe_cytaty_load_textdomain');
+
+/**
+ * Generowanie stylów CSS na podstawie opcji z panelu administracyjnego
+ */
+function losowe_cytaty_generate_custom_css() {
+    // Pobieranie opcji
+    $text_color = get_option('losowe_cytaty_text_color', '#333333');
+    $background_color = get_option('losowe_cytaty_background_color', '#f9f9f9');
+    $border_color = get_option('losowe_cytaty_border_color', '#2271b1');
+    $border_width = get_option('losowe_cytaty_border_width', '4');
+    $border_radius = get_option('losowe_cytaty_border_radius', '0');
+    $author_color = get_option('losowe_cytaty_author_color', '#666666');
+    $show_quote_icon = get_option('losowe_cytaty_show_quote_icon', '1');
+    $quote_icon_color = get_option('losowe_cytaty_quote_icon_color', '#e0e0e0');
+    
+    // Generowanie CSS
+    $css = "
+    .losowe-cytaty-quote {
+        background-color: {$background_color};
+        border-left: {$border_width}px solid {$border_color};
+        border-radius: {$border_radius}px;
+    }
+    
+    .losowe-cytaty-quote p {
+        color: {$text_color};
+    }
+    
+    .losowe-cytaty-quote cite {
+        color: {$author_color};
+    }
+    ";
+    
+    // Dodanie stylów dla ikony cytatu
+    if ($show_quote_icon) {
+        $css .= "
+        .losowe-cytaty-widget.show-quote-icon .losowe-cytaty-quote:before,
+        .losowe-cytaty-quote.show-quote-icon:before {
+            color: {$quote_icon_color};
+        }
+        ";
+    }
+    
+    return $css;
+}
+
+/**
+ * Dodanie niestandardowych stylów do strony
+ */
+function losowe_cytaty_add_custom_styles() {
+    $custom_css = losowe_cytaty_generate_custom_css();
+    
+    if (!empty($custom_css)) {
+        echo '<style id="losowe-cytaty-custom-styles">' . wp_strip_all_tags($custom_css) . '</style>';
+    }
+}
+add_action('wp_head', 'losowe_cytaty_add_custom_styles');

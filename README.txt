@@ -4,7 +4,7 @@ Tags: cytaty, elementor, widget, losowanie, quotes
 Requires at least: 6.2
 Tested up to: 6.5
 Requires PHP: 7.0
-Stable tag: 1.0.4
+Stable tag: 1.0.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -20,6 +20,7 @@ Wtyczka została stworzona przez Studio A7 (https://studioa7.pl) - agencję spec
 
 * Widżet Elementor Pro do wyświetlania losowych cytatów
 * Konfigurowalna częstotliwość odświeżania cytatu (raz dziennie, raz na godzinę, raz na pół godziny, raz na kwadrans, raz na 5 minut, przy przeładowaniu strony)
+* Możliwość dostosowania wyglądu cytatu (kolory, ramka, zaokrąglenie narożników)
 * Możliwość ręcznego wylosowania cytatu
 * Import cytatów z pliku tekstowego
 * Zarządzanie cytatami (dodawanie, edycja, usuwanie)
@@ -74,6 +75,10 @@ Przejdź do menu "Losowe Cytaty" w panelu administracyjnym i wypełnij formularz
 
 Przejdź do menu "Losowe Cytaty" > "Ustawienia" w panelu administracyjnym i wybierz odpowiednią opcję z listy rozwijanej "Częstotliwość odświeżania cytatu". Dostępne opcje to: raz dziennie, raz na godzinę, raz na pół godziny, raz na kwadrans, raz na 5 minut, przy przeładowaniu strony.
 
+= Jak dostosować wygląd cytatu? =
+
+Przejdź do menu "Losowe Cytaty" > "Ustawienia" w panelu administracyjnym i znajdź sekcję "Style cytatu". Tam możesz zmienić kolor tekstu, kolor tła, kolor i szerokość obramowania, zaokrąglenie narożników, kolor autora oraz włączyć/wyłączyć ikonę cytatu i zmienić jej kolor.
+
 = Jak wylosować nowy cytat? =
 
 Przejdź do menu "Losowe Cytaty" > "Ustawienia" w panelu administracyjnym i kliknij przycisk "Wylosuj nowy cytat".
@@ -87,7 +92,11 @@ Przejdź do menu "Losowe Cytaty" > "Ustawienia" w panelu administracyjnym i klik
 = Jak użyć shortcode? =
 
 Użyj shortcode [losowy_cytat] w dowolnym miejscu, gdzie chcesz wyświetlić aktualny cytat.
-Możesz również użyć parametru show_author, aby kontrolować wyświetlanie autora: [losowy_cytat show_author="false"]
+Możesz również użyć parametrów:
+* show_author - aby kontrolować wyświetlanie autora: [losowy_cytat show_author="false"]
+* show_quote_icon - aby kontrolować wyświetlanie ikony cytatu: [losowy_cytat show_quote_icon="false"]
+
+Przykład użycia obu parametrów: [losowy_cytat show_author="true" show_quote_icon="false"]
 
 == Rozwiązywanie problemów ==
 
@@ -106,6 +115,12 @@ Jeśli po instalacji wtyczka nie działa poprawnie:
 4. Panel administracyjny - ustawienia i ręczne losowanie cytatu.
 
 == Changelog ==
+
+= 1.0.5 =
+* Dodano możliwość zmiany koloru ramki, czcionki i podstawowych stylów w ustawieniach na zapleczu.
+* Dodano podgląd na żywo zmian stylów w panelu administracyjnym.
+* Zaktualizowano shortcode [losowy_cytat] o nowy parametr show_quote_icon.
+* Poprawiono wyświetlanie ikony cytatu w różnych kontekstach.
 
 = 1.0.4 =
 * Dodano możliwość ustawienia częstotliwości odświeżania cytatu.
