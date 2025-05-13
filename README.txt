@@ -4,7 +4,7 @@ Tags: cytaty, elementor, widget, losowanie, quotes
 Requires at least: 6.2
 Tested up to: 6.5
 Requires PHP: 7.0
-Stable tag: 1.0.3
+Stable tag: 1.0.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -19,7 +19,7 @@ Wtyczka została stworzona przez Studio A7 (https://studioa7.pl) - agencję spec
 = Główne funkcje =
 
 * Widżet Elementor Pro do wyświetlania losowych cytatów
-* Automatyczne losowanie cytatu raz dziennie
+* Konfigurowalna częstotliwość odświeżania cytatu (raz dziennie, raz na godzinę, raz na pół godziny, raz na kwadrans, raz na 5 minut, przy przeładowaniu strony)
 * Możliwość ręcznego wylosowania cytatu
 * Import cytatów z pliku tekstowego
 * Zarządzanie cytatami (dodawanie, edycja, usuwanie)
@@ -70,6 +70,10 @@ Przejdź do menu "Losowe Cytaty" w panelu administracyjnym i wypełnij formularz
 3. Przejdź do menu "Losowe Cytaty" > "Import Cytatów" w panelu administracyjnym.
 4. Wybierz przygotowany plik i kliknij "Importuj cytaty".
 
+= Jak zmienić częstotliwość odświeżania cytatu? =
+
+Przejdź do menu "Losowe Cytaty" > "Ustawienia" w panelu administracyjnym i wybierz odpowiednią opcję z listy rozwijanej "Częstotliwość odświeżania cytatu". Dostępne opcje to: raz dziennie, raz na godzinę, raz na pół godziny, raz na kwadrans, raz na 5 minut, przy przeładowaniu strony.
+
 = Jak wylosować nowy cytat? =
 
 Przejdź do menu "Losowe Cytaty" > "Ustawienia" w panelu administracyjnym i kliknij przycisk "Wylosuj nowy cytat".
@@ -102,6 +106,12 @@ Jeśli po instalacji wtyczka nie działa poprawnie:
 4. Panel administracyjny - ustawienia i ręczne losowanie cytatu.
 
 == Changelog ==
+
+= 1.0.4 =
+* Dodano możliwość ustawienia częstotliwości odświeżania cytatu.
+* Dostępne opcje: raz dziennie, raz na godzinę, raz na pół godziny, raz na kwadrans, raz na 5 minut, przy przeładowaniu strony.
+* Zoptymalizowano system buforowania w zależności od wybranej częstotliwości.
+* Zaktualizowano informacje w widżecie, aby odzwierciedlały wybraną częstotliwość.
 
 = 1.0.3 =
 * Zaktualizowano wymagania do WordPress 6.2 lub nowszego.

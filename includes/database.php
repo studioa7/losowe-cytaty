@@ -277,6 +277,13 @@ function losowe_cytaty_select_random_quote() {
  * @return array|null Aktualny cytat lub null jeśli nie znaleziono
  */
 function losowe_cytaty_get_current_quote() {
+    // Sprawdzenie czy wybrany jest tryb "przy przeładowaniu strony"
+    $frequency = get_option('losowe_cytaty_refresh_frequency', 'daily');
+    if ($frequency === 'on_reload') {
+        // Przy każdym przeładowaniu strony losujemy nowy cytat
+        return losowe_cytaty_select_random_quote();
+    }
+    
     // Sprawdzenie cache
     $cache_key = 'losowe_cytaty_current_quote';
     $current_quote = wp_cache_get($cache_key);
@@ -291,7 +298,9 @@ function losowe_cytaty_get_current_quote() {
         // Jeśli nie ma zapisanego ID, wylosuj nowy cytat
         $quote = losowe_cytaty_select_random_quote();
         if ($quote) {
-            wp_cache_set($cache_key, $quote, '', 3600);
+            // Ustawienie czasu cache w zależności od częstotliwości
+            $cache_time = losowe_cytaty_get_cache_time($frequency);
+            wp_cache_set($cache_key, $quote, '', $cache_time);
         }
         return $quote;
     }
@@ -302,15 +311,40 @@ function losowe_cytaty_get_current_quote() {
         // Jeśli cytat o danym ID nie istnieje, wylosuj nowy
         $quote = losowe_cytaty_select_random_quote();
         if ($quote) {
-            wp_cache_set($cache_key, $quote, '', 3600);
+            // Ustawienie czasu cache w zależności od częstotliwości
+            $cache_time = losowe_cytaty_get_cache_time($frequency);
+            wp_cache_set($cache_key, $quote, '', $cache_time);
         }
         return $quote;
     }
     
-    // Zapisanie do cache na 1 godzinę (3600 sekund)
-    wp_cache_set($cache_key, $quote, '', 3600);
+    // Ustawienie czasu cache w zależności od częstotliwości
+    $cache_time = losowe_cytaty_get_cache_time($frequency);
+    wp_cache_set($cache_key, $quote, '', $cache_time);
     
     return $quote;
+}
+
+/**
+ * Pobieranie czasu cache w zależności od częstotliwości odświeżania
+ *
+ * @param string $frequency Częstotliwość odświeżania
+ * @return int Czas cache w sekundach
+ */
+function losowe_cytaty_get_cache_time($frequency) {
+    switch ($frequency) {
+        case 'five_minutes':
+            return 300; // 5 minut
+        case 'quarter_hour':
+            return 900; // 15 minut
+        case 'half_hour':
+            return 1800; // 30 minut
+        case 'hourly':
+            return 3600; // 1 godzina
+        case 'daily':
+        default:
+            return 86400; // 24 godziny
+    }
 }
 
 /**

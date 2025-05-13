@@ -11,6 +11,15 @@ if (!defined('ABSPATH')) {
 }
 
 /**
+ * Inicjalizacja ustawień
+ */
+function losowe_cytaty_settings_init() {
+    // Rejestracja ustawień
+    register_setting('losowe_cytaty_settings', 'losowe_cytaty_refresh_frequency');
+}
+add_action('admin_init', 'losowe_cytaty_settings_init');
+
+/**
  * Dodanie menu w panelu administracyjnym
  */
 function losowe_cytaty_add_admin_menu() {
@@ -451,8 +460,41 @@ function losowe_cytaty_settings_page() {
                     <p><?php esc_html_e('Brak cytatów w bazie danych. Dodaj cytaty, aby móc je wyświetlać.', 'losowe-cytaty'); ?></p>
                 <?php endif; ?>
                 
+                <h2><?php esc_html_e('Ustawienia', 'losowe-cytaty'); ?></h2>
+                <form method="post" action="options.php">
+                    <?php
+                    settings_fields('losowe_cytaty_settings');
+                    do_settings_sections('losowe_cytaty_settings');
+                    ?>
+                    <table class="form-table">
+                        <tr valign="top">
+                            <th scope="row"><?php esc_html_e('Częstotliwość odświeżania cytatu', 'losowe-cytaty'); ?></th>
+                            <td>
+                                <select name="losowe_cytaty_refresh_frequency">
+                                    <?php
+                                    $current_frequency = get_option('losowe_cytaty_refresh_frequency', 'daily');
+                                    $frequencies = array(
+                                        'daily' => esc_html__('Raz dziennie', 'losowe-cytaty'),
+                                        'hourly' => esc_html__('Raz na godzinę', 'losowe-cytaty'),
+                                        'half_hour' => esc_html__('Raz na pół godziny', 'losowe-cytaty'),
+                                        'quarter_hour' => esc_html__('Raz na kwadrans', 'losowe-cytaty'),
+                                        'five_minutes' => esc_html__('Raz na 5 minut', 'losowe-cytaty'),
+                                        'on_reload' => esc_html__('Przy przeładowaniu strony', 'losowe-cytaty'),
+                                    );
+                                    
+                                    foreach ($frequencies as $value => $label) {
+                                        echo '<option value="' . esc_attr($value) . '" ' . selected($current_frequency, $value, false) . '>' . esc_html($label) . '</option>';
+                                    }
+                                    ?>
+                                </select>
+                                <p class="description"><?php esc_html_e('Wybierz, jak często cytat ma być automatycznie odświeżany.', 'losowe-cytaty'); ?></p>
+                            </td>
+                        </tr>
+                    </table>
+                    <?php submit_button(); ?>
+                </form>
+                
                 <h2><?php esc_html_e('Informacje', 'losowe-cytaty'); ?></h2>
-                <p><?php esc_html_e('Cytaty są automatycznie losowane raz dziennie.', 'losowe-cytaty'); ?></p>
                 <p><?php esc_html_e('Aby wyświetlić cytat na stronie, użyj widżetu Elementor "Losowy Cytat" lub shortcode [losowy_cytat].', 'losowe-cytaty'); ?></p>
             </div>
         </div>

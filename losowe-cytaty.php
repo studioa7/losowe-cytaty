@@ -3,7 +3,7 @@
  * Plugin Name: Losowe Cytaty
  * Plugin URI: https://wordpress.org/plugins/losowe-cytaty
  * Description: Wtyczka dodająca widżet do wyświetlania losowych cytatów. Kompatybilna z Elementorem oraz standardowym edytorem WordPress.
- * Version: 1.0.3
+ * Version: 1.0.4
  * Author: Dawid Ziółkowski, Studio A7
  * Author URI: https://studioa7.pl
  * Text Domain: losowe-cytaty
@@ -20,7 +20,7 @@ if (!defined('ABSPATH')) {
 }
 
 // Definicje stałych
-define('LOSOWE_CYTATY_VERSION', '1.0.3');
+define('LOSOWE_CYTATY_VERSION', '1.0.4');
 define('LOSOWE_CYTATY_PATH', plugin_dir_path(__FILE__));
 define('LOSOWE_CYTATY_URL', plugin_dir_url(__FILE__));
 define('LOSOWE_CYTATY_BASENAME', plugin_basename(__FILE__));
@@ -157,7 +157,36 @@ class Losowe_Cytaty_WP_Widget extends WP_Widget {
             <label for="<?php echo esc_attr($this->get_field_id('show_quote_icon')); ?>"><?php esc_html_e('Pokaż ikonę cytatu', 'losowe-cytaty'); ?></label>
         </p>
         <p>
-            <?php esc_html_e('Cytat jest losowany automatycznie raz dziennie. Możesz ręcznie wylosować nowy cytat w panelu administracyjnym.', 'losowe-cytaty'); ?>
+            <?php
+            $frequency = get_option('losowe_cytaty_refresh_frequency', 'daily');
+            $frequency_text = '';
+            
+            switch ($frequency) {
+                case 'daily':
+                    $frequency_text = esc_html__('raz dziennie', 'losowe-cytaty');
+                    break;
+                case 'hourly':
+                    $frequency_text = esc_html__('raz na godzinę', 'losowe-cytaty');
+                    break;
+                case 'half_hour':
+                    $frequency_text = esc_html__('raz na pół godziny', 'losowe-cytaty');
+                    break;
+                case 'quarter_hour':
+                    $frequency_text = esc_html__('raz na kwadrans', 'losowe-cytaty');
+                    break;
+                case 'five_minutes':
+                    $frequency_text = esc_html__('raz na 5 minut', 'losowe-cytaty');
+                    break;
+                case 'on_reload':
+                    $frequency_text = esc_html__('przy każdym przeładowaniu strony', 'losowe-cytaty');
+                    break;
+            }
+            
+            printf(
+                esc_html__('Cytat jest losowany automatycznie %s. Możesz ręcznie wylosować nowy cytat w panelu administracyjnym.', 'losowe-cytaty'),
+                $frequency_text
+            );
+            ?>
         </p>
         <?php
     }
@@ -210,6 +239,29 @@ function losowe_cytaty_shortcode($atts) {
     return $output;
 }
 
+/**
+ * Dodanie niestandardowych interwałów cron
+ */
+function losowe_cytaty_add_cron_intervals($schedules) {
+    $schedules['half_hour'] = array(
+        'interval' => 1800, // 30 minut
+        'display'  => esc_html__('Co 30 minut', 'losowe-cytaty')
+    );
+    
+    $schedules['quarter_hour'] = array(
+        'interval' => 900, // 15 minut
+        'display'  => esc_html__('Co 15 minut', 'losowe-cytaty')
+    );
+    
+    $schedules['five_minutes'] = array(
+        'interval' => 300, // 5 minut
+        'display'  => esc_html__('Co 5 minut', 'losowe-cytaty')
+    );
+    
+    return $schedules;
+}
+add_filter('cron_schedules', 'losowe_cytaty_add_cron_intervals');
+
 // Aktywacja wtyczki
 function losowe_cytaty_activate() {
     // Utworzenie tabeli w bazie danych
@@ -219,22 +271,59 @@ function losowe_cytaty_activate() {
     // Dodanie domyślnych cytatów
     losowe_cytaty_add_default_quotes();
     
-    // Ustawienie opcji dla codziennego losowania
-    if (!wp_next_scheduled('losowe_cytaty_daily_event')) {
-        wp_schedule_event(time(), 'daily', 'losowe_cytaty_daily_event');
-    }
+    // Ustawienie domyślnej częstotliwości odświeżania
+    add_option('losowe_cytaty_refresh_frequency', 'daily');
+    
+    // Ustawienie opcji dla losowania cytatu
+    losowe_cytaty_schedule_quote_refresh();
     
     // Zapisanie daty aktywacji
     update_option('losowe_cytaty_activation_date', current_time('timestamp'));
 }
 register_activation_hook(__FILE__, 'losowe_cytaty_activate');
 
+/**
+ * Ustawienie harmonogramu odświeżania cytatu
+ */
+function losowe_cytaty_schedule_quote_refresh() {
+    // Usunięcie wszystkich zaplanowanych zadań
+    wp_clear_scheduled_hook('losowe_cytaty_daily_event');
+    wp_clear_scheduled_hook('losowe_cytaty_refresh_event');
+    
+    // Pobranie ustawionej częstotliwości
+    $frequency = get_option('losowe_cytaty_refresh_frequency', 'daily');
+    
+    // Jeśli wybrano opcję "przy przeładowaniu strony", nie ustawiamy crona
+    if ($frequency === 'on_reload') {
+        return;
+    }
+    
+    // Ustawienie odpowiedniego harmonogramu
+    if ($frequency === 'daily') {
+        wp_schedule_event(time(), 'daily', 'losowe_cytaty_daily_event');
+    } else {
+        wp_schedule_event(time(), $frequency, 'losowe_cytaty_refresh_event');
+    }
+}
+
 // Deaktywacja wtyczki
 function losowe_cytaty_deactivate() {
-    // Usunięcie zaplanowanego zadania
+    // Usunięcie wszystkich zaplanowanych zadań
     wp_clear_scheduled_hook('losowe_cytaty_daily_event');
+    wp_clear_scheduled_hook('losowe_cytaty_refresh_event');
 }
 register_deactivation_hook(__FILE__, 'losowe_cytaty_deactivate');
+
+// Hook dla odświeżania cytatu z różnymi częstotliwościami
+add_action('losowe_cytaty_refresh_event', 'losowe_cytaty_daily_quote_selection');
+
+// Hook dla zapisywania zmian w ustawieniach częstotliwości
+function losowe_cytaty_update_refresh_frequency($old_value, $new_value) {
+    if ($old_value !== $new_value) {
+        losowe_cytaty_schedule_quote_refresh();
+    }
+}
+add_action('update_option_losowe_cytaty_refresh_frequency', 'losowe_cytaty_update_refresh_frequency', 10, 2);
 
 // Odinstalowanie wtyczki
 function losowe_cytaty_uninstall() {
@@ -275,6 +364,7 @@ function losowe_cytaty_uninstall() {
     delete_option('losowe_cytaty_last_change_date');
     delete_option('losowe_cytaty_missing_elementor_classes');
     delete_option('losowe_cytaty_widget_load_error');
+    delete_option('losowe_cytaty_refresh_frequency');
 }
 register_uninstall_hook(__FILE__, 'losowe_cytaty_uninstall');
 
