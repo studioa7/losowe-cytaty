@@ -1,0 +1,101 @@
+/**
+ * Style dla edytora bloku Gutenberga wtyczki Losowe Cytaty
+ */
+
+.wp-block-losowe-cytaty-cytat {
+    position: relative;
+    margin: 0;
+}
+
+.wp-block-losowe-cytaty-cytat .losowe-cytaty-widget {
+    position: relative;
+}
+
+.wp-block-losowe-cytaty-cytat .losowe-cytaty-quote {
+    position: relative;
+    margin: 0;
+    padding: 30px;
+    background-color: var(--quote-background-color, #f9f9f9);
+    border-left: var(--quote-border-width, 4px) solid var(--quote-border-color, #2271b1);
+    border-radius: var(--quote-border-radius, 0px);
+    font-style: italic;
+    z-index: 1;
+}
+
+.wp-block-losowe-cytaty-cytat .losowe-cytaty-quote p {
+    margin: 0;
+    font-size: 18px;
+    line-height: 1.6;
+    position: relative;
+    z-index: 2;
+    color: var(--quote-text-color, #333333);
+}
+
+.wp-block-losowe-cytaty-cytat .losowe-cytaty-quote cite {
+    display: block;
+    margin-top: 15px;
+    font-style: normal;
+    font-weight: 600;
+    text-align: right;
+    font-size: 16px;
+    color: var(--quote-author-color, #666);
+    position: relative;
+    z-index: 2;
+}
+
+/* Ikona cytatu */
+.wp-block-losowe-cytaty-cytat .losowe-cytaty-widget.show-quote-icon .losowe-cytaty-quote:before {
+    content: "\201C"; /* Znak cudzysłowu */
+    font-family: Georgia, serif;
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    font-size: 80px;
+    line-height: 1;
+    color: var(--quote-icon-color, #e0e0e0);
+    z-index: 1;
+    opacity: 0.7;
+}
+
+/* Style dla panelu kontrolnego */
+.losowe-cytaty-inspector-controls .components-base-control {
+    margin-bottom: 16px;
+}
+
+.losowe-cytaty-inspector-controls .components-panel__row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.losowe-cytaty-inspector-controls .components-panel__row label {
+    flex: 1;
+}
+
+.losowe-cytaty-inspector-controls .components-color-palette__item-wrapper {
+    margin-right: 0;
+}
+
+.losowe-cytaty-inspector-controls .components-range-control {
+    width: 100%;
+}
+
+/* Responsywność */
+@media screen and (max-width: 767px) {
+    .wp-block-losowe-cytaty-cytat .losowe-cytaty-quote {
+        padding: 20px;
+    }
+    
+    .wp-block-losowe-cytaty-cytat .losowe-cytaty-quote p {
+        font-size: 16px;
+    }
+    
+    .wp-block-losowe-cytaty-cytat .losowe-cytaty-quote cite {
+        font-size: 14px;
+    }
+    
+    .wp-block-losowe-cytaty-cytat .losowe-cytaty-widget.show-quote-icon .losowe-cytaty-quote:before {
+        font-size: 60px;
+    }
+}

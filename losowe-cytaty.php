@@ -3,7 +3,7 @@
  * Plugin Name: Losowe Cytaty
  * Plugin URI: https://wordpress.org/plugins/losowe-cytaty
  * Description: Wtyczka dodająca widżet do wyświetlania losowych cytatów. Kompatybilna z Elementorem oraz standardowym edytorem WordPress.
- * Version: 1.0.5
+ * Version: 1.0.6
  * Author: Dawid Ziółkowski, Studio A7
  * Author URI: https://studioa7.pl
  * Text Domain: losowe-cytaty
@@ -20,7 +20,7 @@ if (!defined('ABSPATH')) {
 }
 
 // Definicje stałych
-define('LOSOWE_CYTATY_VERSION', '1.0.5');
+define('LOSOWE_CYTATY_VERSION', '1.0.6');
 define('LOSOWE_CYTATY_PATH', plugin_dir_path(__FILE__));
 define('LOSOWE_CYTATY_URL', plugin_dir_url(__FILE__));
 define('LOSOWE_CYTATY_BASENAME', plugin_basename(__FILE__));
@@ -42,6 +42,7 @@ function losowe_cytaty_init() {
     // Ładowanie plików
     require_once LOSOWE_CYTATY_PATH . 'includes/database.php';
     require_once LOSOWE_CYTATY_PATH . 'includes/admin-panel.php';
+    require_once LOSOWE_CYTATY_PATH . 'includes/gutenberg-block.php';
     
     // Rejestracja shortcode niezależnie od Elementora
     add_shortcode('losowy_cytat', 'losowe_cytaty_shortcode');
@@ -408,6 +409,9 @@ function losowe_cytaty_uninstall() {
     delete_option('losowe_cytaty_author_color');
     delete_option('losowe_cytaty_show_quote_icon');
     delete_option('losowe_cytaty_quote_icon_color');
+    
+    // Usunięcie opcji transient dla bloku Gutenberga
+    delete_transient('losowe_cytaty_block_editor_assets');
 }
 register_uninstall_hook(__FILE__, 'losowe_cytaty_uninstall');
 

@@ -4,7 +4,7 @@ Tags: cytaty, elementor, widget, losowanie, quotes
 Requires at least: 6.2
 Tested up to: 6.5
 Requires PHP: 7.0
-Stable tag: 1.0.5
+Stable tag: 1.0.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -19,12 +19,14 @@ Wtyczka została stworzona przez Studio A7 (https://studioa7.pl) - agencję spec
 = Główne funkcje =
 
 * Widżet Elementor Pro do wyświetlania losowych cytatów
+* Blok Gutenberga do wyświetlania losowych cytatów
 * Konfigurowalna częstotliwość odświeżania cytatu (raz dziennie, raz na godzinę, raz na pół godziny, raz na kwadrans, raz na 5 minut, przy przeładowaniu strony)
 * Możliwość dostosowania wyglądu cytatu (kolory, ramka, zaokrąglenie narożników)
+* Zaawansowane opcje stylizacji lewego obramowania
 * Możliwość ręcznego wylosowania cytatu
 * Import cytatów z pliku tekstowego
 * Zarządzanie cytatami (dodawanie, edycja, usuwanie)
-* Shortcode [losowy_cytat] do użycia poza Elementorem
+* Shortcode [losowy_cytat] do użycia poza Elementorem i Gutenbergiem
 
 = Wymagania =
 
@@ -89,6 +91,14 @@ Przejdź do menu "Losowe Cytaty" > "Ustawienia" w panelu administracyjnym i klik
 2. Znajdź widżet "Losowy Cytat" w kategorii "Losowe Cytaty".
 3. Przeciągnij widżet na stronę i dostosuj jego wygląd za pomocą dostępnych opcji.
 
+= Jak użyć bloku Gutenberga? =
+
+1. Edytuj stronę lub wpis za pomocą edytora Gutenberga.
+2. Kliknij przycisk "+" aby dodać nowy blok.
+3. Wyszukaj "Losowy Cytat" i wybierz blok.
+4. Dostosuj wygląd cytatu za pomocą panelu ustawień po prawej stronie.
+5. Zapisz stronę lub wpis, aby zobaczyć losowy cytat na stronie.
+
 = Jak użyć shortcode? =
 
 Użyj shortcode [losowy_cytat] w dowolnym miejscu, gdzie chcesz wyświetlić aktualny cytat.
@@ -115,6 +125,11 @@ Jeśli po instalacji wtyczka nie działa poprawnie:
 4. Panel administracyjny - ustawienia i ręczne losowanie cytatu.
 
 == Changelog ==
+
+= 1.0.6 =
+* Dodano możliwość zmiany koloru i szerokości lewego obramowania w widżecie Elementora.
+* Dodano blok Gutenberga z pełną funkcjonalnością stylizacji.
+* Zaktualizowano dokumentację o informacje o bloku Gutenberga.
 
 = 1.0.5 =
 * Dodano możliwość zmiany koloru ramki, czcionki i podstawowych stylów w ustawieniach na zapleczu.

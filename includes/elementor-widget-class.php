@@ -151,6 +151,43 @@ class Losowe_Cytaty_Widget extends \Elementor\Widget_Base {
         );
         
         $this->add_control(
+            'quote_left_border_color',
+            [
+                'label' => esc_html__('Kolor lewego obramowania', 'losowe-cytaty'),
+                'type' => \Elementor\Controls_Manager::COLOR,
+                'selectors' => [
+                    '{{WRAPPER}} .losowe-cytaty-quote' => 'border-left-color: {{VALUE}};',
+                ],
+                'default' => '#2271b1',
+                'description' => esc_html__('Ustaw kolor lewego obramowania cytatu. Ta opcja nadpisuje kolor ustawiony w ogólnych ustawieniach obramowania.', 'losowe-cytaty'),
+            ]
+        );
+        
+        $this->add_control(
+            'quote_left_border_width',
+            [
+                'label' => esc_html__('Szerokość lewego obramowania', 'losowe-cytaty'),
+                'type' => \Elementor\Controls_Manager::SLIDER,
+                'size_units' => ['px'],
+                'range' => [
+                    'px' => [
+                        'min' => 0,
+                        'max' => 20,
+                        'step' => 1,
+                    ],
+                ],
+                'default' => [
+                    'unit' => 'px',
+                    'size' => 4,
+                ],
+                'selectors' => [
+                    '{{WRAPPER}} .losowe-cytaty-quote' => 'border-left-width: {{SIZE}}{{UNIT}};',
+                ],
+                'description' => esc_html__('Ustaw szerokość lewego obramowania cytatu. Ta opcja nadpisuje szerokość ustawioną w ogólnych ustawieniach obramowania.', 'losowe-cytaty'),
+            ]
+        );
+        
+        $this->add_control(
             'quote_border_radius',
             [
                 'label' => esc_html__('Zaokrąglenie narożników', 'losowe-cytaty'),
