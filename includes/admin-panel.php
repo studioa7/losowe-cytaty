@@ -121,7 +121,7 @@ add_action('admin_enqueue_scripts', 'losowe_cytaty_admin_enqueue_scripts');
  */
 function losowe_cytaty_admin_page() {
     // Obsługa akcji
-    if (isset($_POST['action']) && sanitize_text_field($_POST['action']) == 'add_quote' && check_admin_referer('losowe_cytaty_add_quote')) {
+    if (isset($_POST['action']) && sanitize_text_field(wp_unslash($_POST['action'])) == 'add_quote' && check_admin_referer('losowe_cytaty_add_quote')) {
         $quote = isset($_POST['quote']) ? sanitize_textarea_field(wp_unslash($_POST['quote'])) : '';
         $author = isset($_POST['author']) ? sanitize_text_field(wp_unslash($_POST['author'])) : '';
         
@@ -154,7 +154,7 @@ function losowe_cytaty_admin_page() {
     }
     
     // Obsługa usuwania cytatu
-    if (isset($_GET['action']) && sanitize_text_field($_GET['action']) == 'delete' && isset($_GET['quote_id']) && check_admin_referer('delete_quote_' . wp_unslash($_GET['quote_id']))) {
+    if (isset($_GET['action']) && sanitize_text_field(wp_unslash($_GET['action'])) == 'delete' && isset($_GET['quote_id']) && check_admin_referer('delete_quote_' . wp_unslash($_GET['quote_id']))) {
         $quote_id = intval(wp_unslash($_GET['quote_id']));
         $result = losowe_cytaty_delete_quote($quote_id);
         
@@ -182,7 +182,7 @@ function losowe_cytaty_admin_page() {
     }
     
     // Obsługa edycji cytatu
-    if (isset($_POST['action']) && sanitize_text_field($_POST['action']) == 'edit_quote' && check_admin_referer('losowe_cytaty_edit_quote')) {
+    if (isset($_POST['action']) && sanitize_text_field(wp_unslash($_POST['action'])) == 'edit_quote' && check_admin_referer('losowe_cytaty_edit_quote')) {
         $quote_id = isset($_POST['quote_id']) ? intval(wp_unslash($_POST['quote_id'])) : 0;
         $quote = isset($_POST['quote']) ? sanitize_textarea_field(wp_unslash($_POST['quote'])) : '';
         $author = isset($_POST['author']) ? sanitize_text_field(wp_unslash($_POST['author'])) : '';
@@ -226,7 +226,7 @@ function losowe_cytaty_admin_page() {
     $edit_mode = false;
     $edit_quote = null;
     
-    if (isset($_GET['action']) && sanitize_text_field($_GET['action']) == 'edit' && isset($_GET['quote_id'])) {
+    if (isset($_GET['action']) && sanitize_text_field(wp_unslash($_GET['action'])) == 'edit' && isset($_GET['quote_id']) && isset($_GET['_wpnonce']) && wp_verify_nonce(sanitize_text_field(wp_unslash($_GET['_wpnonce'])), 'edit_quote_' . wp_unslash($_GET['quote_id']))) {
         $quote_id = intval(wp_unslash($_GET['quote_id']));
         $edit_quote = losowe_cytaty_get_quote_by_id($quote_id);
         
@@ -315,7 +315,7 @@ function losowe_cytaty_admin_page() {
                                     <td><?php echo esc_html($quote['author']); ?></td>
                                     <td><?php echo esc_html(date_i18n(get_option('date_format') . ' ' . get_option('time_format'), strtotime($quote['date_added']))); ?></td>
                                     <td>
-                                        <a href="<?php echo esc_url(admin_url('admin.php?page=losowe-cytaty&action=edit&quote_id=' . $quote['id'])); ?>" class="button button-small"><?php esc_html_e('Edytuj', 'losowe-cytaty'); ?></a>
+                                        <a href="<?php echo esc_url(wp_nonce_url(admin_url('admin.php?page=losowe-cytaty&action=edit&quote_id=' . $quote['id']), 'edit_quote_' . $quote['id'])); ?>" class="button button-small"><?php esc_html_e('Edytuj', 'losowe-cytaty'); ?></a>
                                         <a href="<?php echo esc_url(wp_nonce_url(admin_url('admin.php?page=losowe-cytaty&action=delete&quote_id=' . $quote['id']), 'delete_quote_' . $quote['id'])); ?>" class="button button-small delete-quote"><?php esc_html_e('Usuń', 'losowe-cytaty'); ?></a>
                                     </td>
                                 </tr>
@@ -334,9 +334,9 @@ function losowe_cytaty_admin_page() {
  */
 function losowe_cytaty_import_page() {
     // Obsługa importu
-    if (isset($_POST['action']) && sanitize_text_field($_POST['action']) == 'import_quotes' && check_admin_referer('losowe_cytaty_import')) {
+    if (isset($_POST['action']) && sanitize_text_field(wp_unslash($_POST['action'])) == 'import_quotes' && check_admin_referer('losowe_cytaty_import')) {
         if (!empty($_FILES['import_file']['tmp_name'])) {
-            $file_path = sanitize_text_field($_FILES['import_file']['tmp_name']);
+            $file_path = sanitize_text_field(wp_unslash($_FILES['import_file']['tmp_name']));
             $result = losowe_cytaty_import_from_file($file_path);
             
             if ($result['imported'] > 0) {
@@ -403,7 +403,7 @@ function losowe_cytaty_import_page() {
  */
 function losowe_cytaty_settings_page() {
     // Obsługa ręcznego losowania cytatu
-    if (isset($_POST['action']) && sanitize_text_field($_POST['action']) == 'randomize_quote' && check_admin_referer('losowe_cytaty_randomize')) {
+    if (isset($_POST['action']) && sanitize_text_field(wp_unslash($_POST['action'])) == 'randomize_quote' && check_admin_referer('losowe_cytaty_randomize')) {
         $quote = losowe_cytaty_select_random_quote();
         
         if ($quote) {
@@ -578,7 +578,7 @@ function losowe_cytaty_settings_page() {
  */
 function losowe_cytaty_ajax_randomize() {
     // Sprawdzenie nonce
-    if (!isset($_POST['nonce']) || !wp_verify_nonce(wp_unslash(sanitize_text_field($_POST['nonce'])), 'losowe_cytaty_nonce')) {
+    if (!isset($_POST['nonce']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['nonce'])), 'losowe_cytaty_nonce')) {
         wp_send_json_error(array('message' => __('Błąd bezpieczeństwa.', 'losowe-cytaty')));
     }
     

@@ -34,7 +34,11 @@ function losowe_cytaty_check_elementor() {
 function losowe_cytaty_elementor_notice() {
     $message = esc_html__('Plugin "Losowe Cytaty" działa w trybie podstawowym. Zainstaluj i aktywuj plugin Elementor, aby korzystać z zaawansowanych funkcji widżetu.', 'losowe-cytaty');
     
-    echo '<div class="notice notice-info is-dismissible"><p>' . esc_html($message) . '</p></div>';
+    printf(
+        '<div class="%s"><p>%s</p></div>',
+        'notice notice-info is-dismissible',
+        esc_html($message)
+    );
 }
 
 // Inicjalizacja wtyczki
@@ -117,7 +121,11 @@ class Losowe_Cytaty_WP_Widget extends WP_Widget {
         $quote = losowe_cytaty_get_current_quote();
         
         if (!$quote) {
-            echo '<div class="losowe-cytaty-empty">' . esc_html__('Brak cytatów w bazie danych.', 'losowe-cytaty') . '</div>';
+            printf(
+                '<div class="%s">%s</div>',
+                'losowe-cytaty-empty',
+                esc_html__('Brak cytatów w bazie danych.', 'losowe-cytaty')
+            );
         } else {
             $classes = 'losowe-cytaty-quote';
             if ($show_quote_icon) {
@@ -130,16 +138,28 @@ class Losowe_Cytaty_WP_Widget extends WP_Widget {
                 $widget_classes .= ' show-quote-icon';
             }
             
-            echo '<div class="' . esc_attr($widget_classes) . '">';
-            echo '<blockquote class="' . esc_attr($classes) . '" aria-label="' . esc_attr__('Losowy cytat', 'losowe-cytaty') . '">';
-            echo '<p>' . esc_html($quote['quote']) . '</p>';
+            printf(
+                '<div class="%s">',
+                esc_attr($widget_classes)
+            );
+            
+            printf(
+                '<blockquote class="%s" aria-label="%s">',
+                esc_attr($classes),
+                esc_attr__('Losowy cytat', 'losowe-cytaty')
+            );
+            
+            printf('<p>%s</p>', esc_html($quote['quote']));
             
             if ($show_author && !empty($quote['author'])) {
-                echo '<cite aria-label="' . esc_attr__('Autor cytatu', 'losowe-cytaty') . '">— ' . esc_html($quote['author']) . '</cite>';
+                printf(
+                    '<cite aria-label="%s">— %s</cite>',
+                    esc_attr__('Autor cytatu', 'losowe-cytaty'),
+                    esc_html($quote['author'])
+                );
             }
             
-            echo '</blockquote>';
-            echo '</div>'; // Zamknięcie div.losowe-cytaty-widget
+            echo '</blockquote></div>'; // Zamknięcie blockquote i div.losowe-cytaty-widget
         }
         
         echo wp_kses_post($args['after_widget']);
@@ -191,9 +211,10 @@ class Losowe_Cytaty_WP_Widget extends WP_Widget {
                     break;
             }
             
+            /* translators: %s: częstotliwość odświeżania cytatu (np. "raz dziennie", "raz na godzinę") */
             printf(
                 esc_html__('Cytat jest losowany automatycznie %s. Możesz ręcznie wylosować nowy cytat w panelu administracyjnym.', 'losowe-cytaty'),
-                $frequency_text
+                wp_kses_post($frequency_text)
             );
             ?>
         </p>
@@ -498,7 +519,11 @@ function losowe_cytaty_add_custom_styles() {
     $custom_css = losowe_cytaty_generate_custom_css();
     
     if (!empty($custom_css)) {
-        echo '<style id="losowe-cytaty-custom-styles">' . wp_strip_all_tags($custom_css) . '</style>';
+        $safe_css = wp_strip_all_tags($custom_css);
+        printf(
+            '<style id="losowe-cytaty-custom-styles">%s</style>',
+            esc_html($safe_css)
+        );
     }
 }
 add_action('wp_head', 'losowe_cytaty_add_custom_styles');
